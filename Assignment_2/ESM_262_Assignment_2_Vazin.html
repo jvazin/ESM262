@@ -290,8 +290,7 @@ SELECT SUM(Acre) FROM parcels WHERE AgPres IS NOT NULL
 <pre class="sql"><code>
 SELECT AVG(Net_AV)/AVG(Acre)
 FROM parcels
-WHERE Acre IS NOT NULL 
-AND Net_AV IS NOT NULL
+WHERE Acre AND Net_AV IS NOT NULL 
 AND Acre &gt;=0
 </code></pre>
 <div class="knitsql-table">
@@ -304,7 +303,7 @@ AND Acre &gt;=0
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">34202.6288334524</td>
+<td align="left">31933.5097907709</td>
 </tr>
 </tbody>
 </table>
