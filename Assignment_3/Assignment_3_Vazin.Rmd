@@ -1,0 +1,75 @@
+---
+title: "Assignment_3_Vazin"
+author: "Jasmine"
+date: "5/23/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####Results with Mean Speed of 100 km/hr
+```{r}
+
+library(ggplot2)
+
+source("autopower.R")
+
+# generate sample speeds from a distribution
+nsample = 100
+speeds = rnorm(mean=27, sd=2.7, n=nsample)
+
+#create a dataframe that has rows for each model run
+results = data.frame(speed=speeds, power=NA)
+
+results$power = autopower(V=speeds, A=25, m=20000)
+
+#Look at results
+ggplot(results, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+
+#Calculate Mean
+mean(results$power)
+
+```
+
+####Results with Mean Speed of 80 km/hr
+```{r}
+source("autopower.R")
+
+# generate sample speeds from a distribution
+nsample = 100
+speeds = rnorm(mean=24, sd=2.4, n=nsample)
+
+
+#create a dataframe that has rows for each model run
+results2 = data.frame(speed=speeds, power=NA)
+
+results2$power = autopower(V=speeds, A=25, m=20000)
+
+#Look at Results
+ggplot(results2, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+
+#Calculate Mean
+mean(results2$power)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
