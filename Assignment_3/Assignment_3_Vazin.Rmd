@@ -8,68 +8,88 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+###1. What if we design new highways that have lower rolling coefficients where we reduce the rolling coefficient by 50%
 
-####Results with Mean Speed of 100 km/hr
 ```{r}
-
-library(ggplot2)
 
 source("autopower.R")
 
-# generate sample speeds from a distribution
-nsample = 100
-speeds = rnorm(mean=27, sd=2.7, n=nsample)
+#decrease rolling coefiicent by 50% .025 to .0075
+crolling_new = 0.0075 
 
-#create a dataframe that has rows for each model run
-results = data.frame(speed=speeds, power=NA)
+#create dataframe
+nsample = 1000
+speeds = rnorm(mean=25, sd=4, n=nsample)
+results_rolling = data.frame(speed=speeds, power=NA)
 
-results$power = autopower(V=speeds, A=25, m=20000)
+##Generate care area and mass probabilities
+possible_cars_rolling = data.frame(mass=c(31000,45000,38000), area = c(25,30,22))
+possible_cars_rolling$row = seq(from=1, to=nrow(possible_cars_rolling))
+possible_cars_rolling$prob = c(0.4, 0.4, 0.2)
 
-#Look at results
-ggplot(results, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
+##Created a large random sample of the three cars   
+whichcar_rolling = base::sample(possible_cars_rolling$row, size=nsample, prob=possible_cars_rolling$prob, replace=TRUE)
 
-#Calculate Mean
-mean(results$power)
+## Populate results in dataframe
+results_rolling$mass = possible_cars_rolling$mass[whichcar_rolling]
+results_rolling$area = possible_cars_rolling$area[whichcar_rolling]
 
+#get results
+rolling <- autopower(V=results_rolling$speed, m = results_rolling$mass, A = results_rolling$area, crolling = crolling_new)
+
+#Mean Power
+mean(rolling)
+
+#150563.4 W power output
 ```
 
-####Results with Mean Speed of 80 km/hr
+###2. Alternatively, we implement a policy that reduce the mean speed from 100 km/h to 80 km/h (still with 10% standard deviation)
+
 ```{r}
-source("autopower.R")
+#Calculate speed in m/s
+mean_speed_fast = 100 * 0.277    #100km/hr to m/s
+mean_speed_slow = 80 * 0.277  #80km/hr to ms
+set.seed(25)
+speeds_fast = rnorm(mean = mean_speed_fast, sd=0.1*mean_speed_fast, n=nsample)
+speeds_slow = rnorm(mean = mean_speed_slow, sd=0.1*mean_speed_slow, n=nsample)
 
-# generate sample speeds from a distribution
-nsample = 100
-speeds = rnorm(mean=24, sd=2.4, n=nsample)
+#Create dataframes to put power results into
+results_fast = data.frame(speed=speeds_fast, power=NA)
+results_slow = data.frame(speed=speeds_slow, power=NA)
+
+#Generate care area and mass probabilities for 100km/hr
+possible_cars_fast = data.frame(mass=c(31000,4200,38000), area = c(25,30,22))
+possible_cars_fast$row = seq(from=1, to=nrow(possible_cars_fast))
+possible_cars_fast$prob = c(0.4, 0.4, 0.2)
+
+#Generate care area and mass probabilities for 80km/hr
+possible_cars_slow = data.frame(mass=c(31000,4200,38000), area = c(25,30,22))
+possible_cars_slow$row = seq(from=1, to=nrow(possible_cars_slow))
+possible_cars_slow$prob = c(0.4, 0.4, 0.2)
+
+##Create random sample of the three cars   
+whichcar_fast= base::sample(possible_cars_fast$row, size=nsample, prob=possible_cars_fast$prob, replace=TRUE)
+
+whichcar_slow= base::sample(possible_cars_slow$row, size=nsample, prob=possible_cars_slow$prob, replace=TRUE)
+
+## Populate results into dataframes
+results_fast$mass = possible_cars_fast$mass[whichcar_fast]
+results_fast$area = possible_cars_fast$area[whichcar_fast]
+
+results_slow$mass = possible_cars_slow$mass[whichcar_slow]
+results_slow$area = possible_cars_slow$area[whichcar_slow]
+
+#run functions
+speed_fast <- autopower(V=results_fast$speed, m = results_fast$mass, A = results_fast$area)
+
+speed_slow <- autopower(V=results_slow$speed, m = results_slow$mass, A = results_slow$area)
 
 
-#create a dataframe that has rows for each model run
-results2 = data.frame(speed=speeds, power=NA)
+#Compare
+mean(speed_fast)
+mean(speed_slow)
 
-results2$power = autopower(V=speeds, A=25, m=20000)
-
-#Look at Results
-ggplot(results2, aes(speed, power/1000))+geom_point()+labs(x="speed in m/s", y="power in kW")
-
-#Calculate Mean
-mean(results2$power)
-
-
+#100 km/hr = 148648.1 W power output
+#80 km/hr = 88053.16 W power output
+#Of the two methods, reducing the mean speed is more effective to reduce power outputs
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
