@@ -1,0 +1,57 @@
+---
+title: "Assignment4_Vazin"
+author: "Jasmine"
+date: "5/30/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#load packages and source function
+library(tidyverse)
+library(reshape2)
+
+source("Function_Vazin.R")
+```
+
+
+```{r}
+#Create data
+
+#Species of fish being caught
+possible.fish = c("salmon","steelhead","shark","tuna","cod", "halibut", "rockfish")
+
+fish_price <- c(12, 15, 24, 20, 11, 7, 5)
+site_1 = c(200, 78, 200, 75, 150, 230, 190)
+site_2 = c(150, 180, 300, 40, 95, 260, 50)
+site_3 = c(75, 310, 150, 35, 130, 87, 320)
+site_4 = c(50, 240, 250, 60, 120, 215, 410)
+
+#prices for each fish species
+fishprice <- data.frame(possible.fish, fish_price)
+
+#Amount of each fish caught per site
+siteyield <- data.frame(possible.fish, site_1,site_2, site_3, site_4)
+
+```
+
+
+```{r}
+#Report Results
+
+#Results with graph
+Graph<- fish_results(count = siteyield, price = fishprice, graph = T)
+Graph
+```
+
+```{r}
+#Report Results
+
+#Results without graph
+NoGraph<- fish_results(count = siteyield, price = fishprice)
+NoGraph
+```
+
