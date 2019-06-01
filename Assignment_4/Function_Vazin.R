@@ -52,7 +52,7 @@ Fisheries_Revenue = sum(total_revenue$total_revenue)
 #Create graph of revenues by site
 rev_graph <- ggplot(revenues, aes(x=Site, y=total_revenue))+
     geom_bar(stat = "identity", fill= "seagreen2")+
-    annotate(geom="label", x=2, y=500, label= paste0("Total Fisheries Revenue For All Sites  " , "$",  Fisheries_Revenue),
+    annotate(geom="label", x=2, y=500, label= paste("Total Fisheries Revenue For All Sites  " , "$",  Fisheries_Revenue),
     color="black", fill = "white")+
     xlab("Site")+
     ylab("Revenue (USD)")+
