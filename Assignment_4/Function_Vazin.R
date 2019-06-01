@@ -24,48 +24,42 @@ site_3_yield <- count %>%
     dplyr::select(possible.fish, site_3) %>% 
     filter(site_3 == max(site_3)) %>% 
     melt(id.vars = "possible.fish")
-
-site_4_yield <- count %>%
-    dplyr::select(possible.fish, site_4) %>% 
-    filter(site_4 == max(site_4)) %>% 
-    melt(id.vars = "possible.fish")
   
 #Create dataframe with the highest frequency fish   
-max_fish <- rbind(site_1_yield, site_2_yield, site_3_yield, site_4_yield) 
+max_fish <- rbind(site_1_yield, site_2_yield, site_3_yield) 
 
 colnames(max_fish) <- c("Species", "Site", "Count")
 
-#Calculate revenue by site
+#Calculate revenue by site and put it into a dataframe
 site_revenue = data.frame(fish = possible.fish,
                        site1 = count[,2] * price[,2],
                        site2 = count[,3] * price[,2], 
-                       site3 = count[,4] * price[,2],
-                       site4 = count[,5] * price[,2])
+                       site3 = count[,4] * price[,2])
  
-#Create a dataframe
 site_revenue = melt(site_revenue, id = "fish")
   
 colnames(site_revenue) <- c("fish", "Site", "Revenue")
   
-#Add up total revenues
+#Add up total revenues by site
 total_revenue <- site_revenue %>% 
     group_by(Site) %>% 
     summarise(total_revenue = sum(Revenue))
 revenues <- as.data.frame(total_revenue)
   
-#Calculate Fisheries Revenue Total 
+#Calculate fisheries revenue total for all sites
 Fisheries_Revenue = sum(total_revenue$total_revenue)
   
 #Create graph of revenues by site
 rev_graph <- ggplot(revenues, aes(x=Site, y=total_revenue))+
-    geom_bar(stat = "identity", fill= "darkgreen")+
-    annotate(geom="label", x=3, y=8000, label= paste0("Total Fisheries Revenue For All Sites", "$", Fisheries_Revenue),
+    geom_bar(stat = "identity", fill= "seagreen2")+
+    annotate(geom="label", x=2, y=500, label= paste0("Total Fisheries Revenue For All Sites  " , "$",  Fisheries_Revenue),
     color="black", fill = "white")+
-    theme_classic()+
-    ylab("Revenue (USD)")+
     xlab("Site")+
-    labs(title = "Total Fishing Revenue By Site\n")+
-    theme(plot.title = element_text(hjust = 0.5))
+    ylab("Revenue (USD)")+
+    labs(title = "Total Fishing Revenue By Site")+
+  theme_dark()+
+  theme(plot.title = element_text(hjust = 0.5))
+   
   
 #Returns if user wants a graph of revenues
   if(graph == T){
